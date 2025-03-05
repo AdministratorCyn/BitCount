@@ -16,7 +16,10 @@ public class Main {
             //split threads
             Sudoku sudoku = new Sudoku(scan.nextLine());
             System.out.println(Arrays.deepToString(sudoku.charGrid));
-            System.out.println(sudoku.toFormatString());
+            String out = sudoku.toFormatString();
+            System.out.println(out);
+            Counter count = new Counter(sudoku);
+            count.count();
         }
         else if (input.equals("batch")){
             //# threads?
