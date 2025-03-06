@@ -19,7 +19,8 @@ public class Main {
             String out = sudoku.toFormatString();
             System.out.println(out);
             Counter count = new Counter(sudoku);
-            count.count();
+            System.out.println(count.count());
+
         }
         else if (input.equals("batch")){
             //# threads?
