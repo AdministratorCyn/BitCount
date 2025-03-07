@@ -106,8 +106,30 @@ public class Sudoku {
         }*/
 
     }
-    public void autocand(short input) {
-        //x, y, val
+    public void autocand(int x, int y, int val) {
+        for (int k = 0; k < 9; k++) {
+            if (k != x) {
+                candGrid[y][k / 3] &= ~(1 << (32 - ((k % 3) * 9 + val))); //too messy to flash
+            }
+        }
+        //vert
+        for (int k = 0; k < 9; k++) {
+            if (k != y) {
+                candGrid[k][x / 3] &= ~(1 << (32 - ((x % 3) * 9 + val)));
+            }
+        }
+        //box
+        for (int k = 0; k < 9; k++) {
+            if (k != ((y % 3) * 3 + x % 3)) {
+                candGrid[y / 3 * 3 + (k / 3)][x / 3] &= ~(1 << (32 - ((k % 3) * 9 + val)));
+            }
+        }
+        //cell
+        for (int k = 0; k < 9; k++) {
+            if ((k + 1) != val) {
+                candGrid[y][x / 3] &= ~(1 << (31 - ((x % 3) * 9 + k)));
+            }
+        }
     }
     //funny ns with aggregated shifting
 }

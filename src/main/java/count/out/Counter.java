@@ -12,7 +12,7 @@ public class Counter{
         outerloop:
         for (y = 0; y < 9; y++) {
             for (x = 0; x < 9; x++) {
-                if (((s.charGrid[y][x / 4] & 0xFFFF) >> ((3 - (x % 4)) * 4) & 15) == 0) {
+                if (((s.charGrid[y][x / 4]) >> ((3 - (x % 4)) * 4) & 15) == 0) {
                     break outerloop;
                 }
             }
@@ -20,14 +20,20 @@ public class Counter{
                 return 1;
             }
         }
+        int[][] copy = new int[s.candGrid.length][];
+        for (int p = 0; p < s.candGrid.length; p++) {
+            copy[p] = s.candGrid[p].clone();
+        }
+        short old = s.charGrid[y][x / 4];
         for (int i = 0; i < 9; i++) {
             if ((s.candGrid[y][x / 3] & (1 << (31 - ((x % 3) * 9 + i)))) != 0) {
-                short old = s.charGrid[y][x / 4];
                 s.charGrid[y][x / 4] |= ((i + 1) << (4 * (3 - (x % 4))));
-                s.autocand();
+                s.autocand(x, y, (i + 1));
                 count += count();
                 s.charGrid[y][x / 4] = old;
-                s.autocand();
+                for (int j = 0; j < 9; j++) {
+                    System.arraycopy(copy[j], 0, s.candGrid[j], 0, 3);
+                }
             }
         }
         return count;

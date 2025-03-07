@@ -1,12 +1,17 @@
 package count.out;
 
 import java.util.*;
-//struct first
-//mask with 9 instead of 16?
+//charge autocand
+//mask with 9 instead of 16 (in char)?
+
+
+//go do ns please
+
 
 //m<>s<<>>t(c)t(c)
-//0n 315 729 846
-//0b 10000010 10101010 10110010 0101
+
+//fastest 3.3609s
+//.....5.7.1......38.....1..2..2.9......3.5...6...............9.7.8.6..4.....2.4...
 public class Main {
     public static boolean isValidPlacement(int row, int col, int num, int[][] sudokuGrid) {
         // Check the row
@@ -46,12 +51,13 @@ public class Main {
             System.out.println(Arrays.deepToString(sudoku.charGrid));
             String out = sudoku.toFormatString();
             System.out.println(out);
+            long start = System.nanoTime();
             Counter count = new Counter(sudoku);
-            System.out.println(count.count());
+            System.out.println(count.count() + " " + (System.nanoTime() - start));
 
         }
         else if (input.equals("batch")){
-            for (int t = 0; t < 16; t++) {
+            for (int t = 0; t < 6; t++) {
                 StringBuilder str = new StringBuilder(".................................................................................");
 
                 // Number of digits to place
