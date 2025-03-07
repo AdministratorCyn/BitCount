@@ -41,6 +41,47 @@ public class Main {
 
         return true;
     }
+    public static StringBuilder generate() {
+        StringBuilder str = new StringBuilder(".................................................................................");
+
+        // Number of digits to place
+        int mod = (int) (Math.random() * 5);
+        int numberOfDigits = 16 + mod;
+
+        // Sudoku grid (9x9) for checking placement rules
+        int[][] sudokuGrid = new int[9][9];
+
+        // Function to check if placing a number violates Sudoku rules
+
+
+        // Fill Sudoku with random digits while ensuring no rule violations
+        for (int i = 0; i < numberOfDigits; i++) {
+            boolean placed = false;
+            while (!placed) {
+                // Random position in the grid
+                int randomPos = (int) (Math.random() * 81);
+                int row = randomPos / 9;
+                int col = randomPos % 9;
+
+                // Skip if already filled or invalid position
+                if (str.charAt(randomPos) != '.') {
+                    continue;
+                }
+
+                // Generate the digit for placement (1 to 9)
+                int num = (i + 1) % 9 + 1;
+
+                // Check if it's valid to place the number
+                if (isValidPlacement(row, col, num, sudokuGrid)) {
+                    // Place the digit in the string and the grid
+                    str.setCharAt(randomPos, Character.forDigit(num, 10));
+                    sudokuGrid[row][col] = num;
+                    placed = true;
+                }
+            }
+        }
+        return str;
+    }
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         String input = scan.nextLine();
@@ -58,45 +99,7 @@ public class Main {
         }
         else if (input.equals("batch")){
             for (int t = 0; t < 6; t++) {
-                StringBuilder str = new StringBuilder(".................................................................................");
-
-                // Number of digits to place
-                int mod = (int) (Math.random() * 5);
-                int numberOfDigits = 16 + mod;
-
-                // Sudoku grid (9x9) for checking placement rules
-                int[][] sudokuGrid = new int[9][9];
-
-                // Function to check if placing a number violates Sudoku rules
-
-
-                // Fill Sudoku with random digits while ensuring no rule violations
-                for (int i = 0; i < numberOfDigits; i++) {
-                    boolean placed = false;
-                    while (!placed) {
-                        // Random position in the grid
-                        int randomPos = (int) (Math.random() * 81);
-                        int row = randomPos / 9;
-                        int col = randomPos % 9;
-
-                        // Skip if already filled or invalid position
-                        if (str.charAt(randomPos) != '.') {
-                            continue;
-                        }
-
-                        // Generate the digit for placement (1 to 9)
-                        int num = (i + 1) % 9 + 1;
-
-                        // Check if it's valid to place the number
-                        if (isValidPlacement(row, col, num, sudokuGrid)) {
-                            // Place the digit in the string and the grid
-                            str.setCharAt(randomPos, Character.forDigit(num, 10));
-                            sudokuGrid[row][col] = num;
-                            placed = true;
-                        }
-                    }
-                }
-                Sudoku sudoku = new Sudoku(str.toString());
+                Sudoku sudoku = new Sudoku(generate().toString());
                 System.out.println(sudoku.toFormatString());
                 CountThread thread = new CountThread(new Counter(sudoku));
                 thread.start();

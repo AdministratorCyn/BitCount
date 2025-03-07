@@ -6,6 +6,9 @@ public class CountThread extends Thread{
         c = counter;
     }
     public void run() {
-        System.out.println(c.s.toFormatString() + " " + c.count());
+        for (; ;) {
+            System.out.println(c.s.toFormatString() + " " + c.count());
+            c.s = new Sudoku(Main.generate().toString());
+        }
     }
 }
