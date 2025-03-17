@@ -98,7 +98,7 @@ public class Main {
 
         }
         else if (input.equals("batch")){
-            for (int t = 0; t < 6; t++) {
+            for (int t = 0; t < 1; t++) {
                 Sudoku sudoku = new Sudoku(generate().toString());
                 System.out.println(sudoku.toFormatString());
                 CountThread thread = new CountThread(new Counter(sudoku));
