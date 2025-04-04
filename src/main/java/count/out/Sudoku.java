@@ -45,7 +45,7 @@ public class Sudoku {
                     sub = charGrid[i][j / 4] & 0xFFFF;
                 }
                 //int mask = (sub & (15 << ((3 - k) * 4))) >> ((3 - k) * 4); L
-                int mask = (sub >> ((3 - (j % 4)) * 4) & 15);
+                int mask = (sub >> ((3 - (j & 3)) << 2) & 15);
                 if (mask == 0) {
                     out.append('.');
                 } else {
@@ -132,4 +132,14 @@ public class Sudoku {
         }
     }
     //funny ns with aggregated shifting
+    public void ns() { //return int
+        for (int i = 0; i < 9; i++) { //81 fits into 8 bits!
+            for (int j = 0; j < 9; j++) {
+                if (Integer.bitCount((candGrid[i][j / 3] >> (5 + (2 - (j % 3)) * 9)) & 511) == 1) {
+                    //System.out.println(i + " " + j);
+                    charGrid[i][j / 4] |= (Integer.numberOfTrailingZeros(((candGrid[i][j / 3] >> (5 + (2 - (j % 3)) * 9)) & 511) + 1) << ((4 - (j % 4 + 1)) << 2));
+                } //above statement is fucked
+            }
+        }
+    }
 }

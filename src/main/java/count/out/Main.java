@@ -4,6 +4,10 @@ import java.util.*;
 //charge autocand
 //mask with 9 instead of 16 (in char)?
 
+/*
+    use all bitwise operations
+    find out how to do / !(2^n) with bitwise
+ */
 
 //go do ns please
 
@@ -89,6 +93,9 @@ public class Main {
             //parse, # threads?
             //split threads
             Sudoku sudoku = new Sudoku(scan.nextLine());
+            for (int i = 0; i < 100; i++) {
+                sudoku.ns();
+            }
             System.out.println(Arrays.deepToString(sudoku.charGrid));
             String out = sudoku.toFormatString();
             System.out.println(out);
@@ -98,7 +105,7 @@ public class Main {
 
         }
         else if (input.equals("batch")){
-            for (int t = 0; t < 1; t++) {
+            for (int t = 0; t < 4; t++) {
                 Sudoku sudoku = new Sudoku(generate().toString());
                 System.out.println(sudoku.toFormatString());
                 CountThread thread = new CountThread(new Counter(sudoku));

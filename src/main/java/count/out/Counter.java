@@ -7,19 +7,12 @@ public class Counter{
     }
     public int count() {
         int count = 0;
-        int y = -1;
-        int x = -1;
-        outerloop:
-        for (y = 0; y < 9; y++) {
-            for (x = 0; x < 9; x++) {
-                if (((s.charGrid[y][x / 4]) >> ((3 - (x % 4)) * 4) & 15) == 0) {
-                    break outerloop;
-                }
-            }
-            if (y == 8) {
-                return 1;
-            }
+        int[] res = findUSC();
+        if (res[0] == -1) {
+            return 1;
         }
+        int y = res[1];
+        int x = res[0];
         int[][] copy = new int[s.candGrid.length][];
         for (int p = 0; p < s.candGrid.length; p++) {
             copy[p] = s.candGrid[p].clone();
@@ -27,7 +20,7 @@ public class Counter{
         short old = s.charGrid[y][x / 4];
         for (int i = 0; i < 9; i++) {
             if ((s.candGrid[y][x / 3] & (1 << (31 - ((x % 3) * 9 + i)))) != 0) {
-                s.charGrid[y][x / 4] |= ((i + 1) << (4 * (3 - (x % 4))));
+                s.charGrid[y][x >> 2] |= ((i + 1) << ((3 - (x & 3)) << 2));
                 s.autocand(x, y, (i + 1));
                 count += count();
                 s.charGrid[y][x / 4] = old;
@@ -37,5 +30,16 @@ public class Counter{
             }
         }
         return count;
+    }
+    public int[] findUSC() {
+        for (int i = 0; i < 9; i++) {
+            int j = 0;
+            for (; j < 9; j++) {
+                if (((s.charGrid[i][j >> 2]) >> ((3 - (j & 3)) << 2) & 15) == 0) {
+                    return new int[]{j, i};
+                }
+            }
+        }
+        return new int[]{-1};
     }
 }
