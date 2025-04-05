@@ -136,10 +136,12 @@ public class Sudoku {
         for (int i = 0; i < 9; i++) { //81 fits into 8 bits!
             for (int j = 0; j < 9; j++) {
                 if (Integer.bitCount((candGrid[i][j / 3] >> (5 + (2 - (j % 3)) * 9)) & 511) == 1) {
-                    //System.out.println(i + " " + j);
-                    charGrid[i][j / 4] |= (Integer.numberOfTrailingZeros(((candGrid[i][j / 3] >> (5 + (2 - (j % 3)) * 9)) & 511) + 1) << ((4 - (j % 4 + 1)) << 2));
-                } //above statement is fucked
+                    charGrid[i][j / 4] |= (9 - Integer.numberOfTrailingZeros(((candGrid[i][j / 3] >> (5 + (2 - (j % 3)) * 9)) & 511))) << ((4 - (j % 4 + 1)) << 2);
+                }
             }
         }
+    }
+    public void hs() {//try and aggregate across regions
+
     }
 }
