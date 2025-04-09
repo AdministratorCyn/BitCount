@@ -3,6 +3,7 @@ package count.out;
 import java.util.*;
 //charge autocand
 //mask with 9 instead of 16 (in char)?
+//benchmark time to file
 
 /*
     use all bitwise operations
@@ -93,7 +94,11 @@ public class Main {
             //parse, # threads?
             //split threads
             Sudoku sudoku = new Sudoku(scan.nextLine());
-            sudoku.ns();
+            int res = sudoku.ns();
+            while(res == 1) {
+                res = sudoku.ns();
+            }
+            sudoku.hs();
             System.out.println(Arrays.deepToString(sudoku.charGrid));
             String out = sudoku.toFormatString();
             System.out.println(out);
@@ -103,7 +108,7 @@ public class Main {
 
         }
         else if (input.equals("batch")){
-            for (int t = 0; t < 1; t++) {
+            for (int t = 0; t < scan.nextInt(); t++) {
                 Sudoku sudoku = new Sudoku(generate().toString());
                 System.out.println(sudoku.toFormatString());
                 CountThread thread = new CountThread(new Counter(sudoku));

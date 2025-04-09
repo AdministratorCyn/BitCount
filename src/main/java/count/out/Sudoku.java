@@ -10,6 +10,7 @@ public class Sudoku {
 
     public short[][] charGrid = new short[9][3]; //see if both have better prim approxes
     public int[][] candGrid = new int[9][3];
+    private Delta deltas;
 
     //367415892482369715915827463136274589274958631859136247721683954693542178548791326
     //9.6..2.7....94....4...578..13......2...271...6......41..158...6....14....6.7..4.5
@@ -28,9 +29,43 @@ public class Sudoku {
             }
         }
         autocand();
+        deltas = new Delta();
     }
     public Sudoku(int givens) {
 
+    }
+    private class Delta {
+        //9 numbers by 3 dirs by 3 sections
+        int[][] deltas = new int[9][9];
+
+        private Delta() { //benchmark if you get bored
+            for (int[] row : deltas) {
+                Arrays.fill(row, 0);
+            }
+            for (int i = 0; i < 9; i++) { //number
+                for (int j = 0; j < 9; j++) { //region
+                    for (int k = 0; k < 9; k++) { //h
+                        if (((candGrid[j][k / 3] >> (5 + ((2 - k % 3) * 9) + (8 - i))) & 1) == 1) {
+                            deltas[i][j / 3] |= (1 << (31 - (j % 3 * 9 + k)));
+                        }
+                    }
+                    for (int k = 0; k < 9; k++) {//v
+                        if (((candGrid[k][j / 3] >> (5 + ((2 - j % 3) * 9) + (8 - i))) & 1) == 1) {
+                            deltas[i][3 + j / 3] |= (1 << (31 - (j % 3 * 9 + k)));
+                        }
+                    }
+                    for (int k = 0; k < 9; k++) {//b
+
+                    }
+                }
+            }
+            for (int[] row : deltas) {
+                for (int out : row) {
+                    System.out.print(Integer.toBinaryString(((out >> 5) & ~(31 << 27)) | (1 << 31)) + "   ");
+                }
+                System.out.println();
+            }
+        }
     }
     public CountThread[] split() {
         CountThread[] threads = new CountThread[2];
@@ -95,16 +130,6 @@ public class Sudoku {
                 }
             }
         }
-        /*for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                System.out.print(Integer.toBinaryString(candGrid[i][j / 3] |= 1 << 31).substring(j % 3 * 9, (j % 3 + 1) * 9) + " ");
-                if (j % 3 == 2) {
-                    System.out.print(" | ");
-                }
-            }
-            System.out.println();
-        }*/
-
     }
     public void autocand(int x, int y, int val) {
         for (int k = 0; k < 9; k++) {
@@ -132,16 +157,28 @@ public class Sudoku {
         }
     }
     //funny ns with aggregated shifting
-    public void ns() { //return int
-        for (int i = 0; i < 9; i++) { //81 fits into 8 bits!
-            for (int j = 0; j < 9; j++) {
-                if (Integer.bitCount((candGrid[i][j / 3] >> (5 + (2 - (j % 3)) * 9)) & 511) == 1) {
+    public int ns() {
+        for (byte i = 0; i < 9; i++) {
+            for (byte j = 0; j < 9; j++) {
+                if (((charGrid[i][j / 4] >> ((3 - (j & 3)) << 2) & 15) == 0) && (Integer.bitCount((candGrid[i][j / 3] >> (5 + (2 - (j % 3)) * 9)) & 511) == 1)) {
                     charGrid[i][j / 4] |= (9 - Integer.numberOfTrailingZeros(((candGrid[i][j / 3] >> (5 + (2 - (j % 3)) * 9)) & 511))) << ((4 - (j % 4 + 1)) << 2);
+                    autocand(j, i, (9 - Integer.numberOfTrailingZeros(((candGrid[i][j / 3] >> (5 + (2 - (j % 3)) * 9))))));
+                    return 1; //scs
                 }
             }
         }
+        return 0;
     }
     public void hs() {//try and aggregate across regions
-
+        //use Delta class
+        for (byte i = 0; i < 9; i++) {
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 9; k++) {
+                    if (Integer.bitCount((deltas.deltas[i][j * 3 + k / 3] >> (5 + ((2 - k % 3) * 9))) & 511) == 1) {
+                        System.out.println(i + " dir: " + j + " " + k);
+                    }
+                }
+            }
+        }
     }
 }
